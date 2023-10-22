@@ -10,7 +10,8 @@ __In progress__
 
 - MIT 18.S191 Introduction to Computational Thinking
 
-  - [ ] Week 1
+  - [X] Week 1
+  - [ ] Week 2
   - [ ] ...
 
 __Completed__
