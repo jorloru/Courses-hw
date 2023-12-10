@@ -8,7 +8,7 @@ If you stumbled upon this repository you probably won't find it useful or intere
 
 __Seam carving algorithm__ (MIT 18.S191)
 
-![Seam Carving](https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExeWkwa2dqcXUyNmIyMm1tZHdqeWZ5eDNobnAxZHk1dGYzdDd4dXlsZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/7YtqdFOf9ccouYNIp5/giphy.gif)
+![Seam Carving](https://github.com/jorloru/Courses-hw/blob/main/MIT/18.S191%20Introduction%20to%20computational%20thinking/Week%202/SeamCarving.gif)
 
 ## Status of the courses
 
