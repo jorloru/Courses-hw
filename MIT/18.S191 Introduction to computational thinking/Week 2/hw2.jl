@@ -515,7 +515,7 @@ This algorithm is of order O(n*3^m).
 
 # ╔═╡ ea417c2a-f373-11ea-3bb0-b1b5754f2fac
 md"""
-## **Exercise 3** - _Memorization_
+## **Exercise 3** - _Memoization_
 
 **Memoization** is the name given to the technique of storing results to expensive function calls that will be accessed more than once.
 
@@ -545,20 +545,58 @@ You are expected to read and understand the [documentation on dictionaries](http
 
 # ╔═╡ b1d09bc8-f320-11ea-26bb-0101c9a204e2
 function memoized_least_energy(energies, i, j, memory)
-	m, n = size(energies)
 	
-	# Replace the following line with your code.
-	[starting_pixel for i=1:m]
+	if ~haskey(memory,(i,j))
+		
+		N,M = size(energies);
+
+		if i == N
+		    memory[i,j] = (energies[i,j],0);
+		else
+			if j == 1
+				result_1, memory_1 = memoized_least_energy(energies, i+1, j,  memory);
+				result_2, memory_2 = memoized_least_energy(energies, i+1, j+1,memory);
+				results = [result_1, result_2];
+				best = argmin(results);
+				memory = merge(memory_1, memory_2);
+			elseif j == M
+				result_1, memory_1 = memoized_least_energy(energies, i+1, j-1,memory);
+				result_2, memory_2 = memoized_least_energy(energies, i+1, j,  memory);
+				results = [result_1, result_2];
+				best = argmin(results);
+				memory = merge(memory_1, memory_2);
+			else
+				result_1, memory_1 = memoized_least_energy(energies, i+1, j-1,memory);
+				result_2, memory_2 = memoized_least_energy(energies, i+1, j,  memory);
+				result_3, memory_3 = memoized_least_energy(energies, i+1, j+1,memory);
+				results = [result_1, result_2, result_3];
+				best = argmin(results);
+				memory = merge(memory_1, memory_2, memory_3);
+			end
+			
+			memory[i,j] = (energies[i,j][1] + results[best],j + best - 1 - 1*(j>1));
+		end
+	end
+
+	return memory[i,j][1], memory
 end
 
 # ╔═╡ 3e8b0868-f3bd-11ea-0c15-011bbd6ac051
 function recursive_memoized_seam(energies, starting_pixel)
-	memory = Dict{Tuple{Int,Int}, Float64}() # location => least energy.
-	                                         # pass this every time you call memoized_least_energy.
-	m, n = size(energies)
 	
-	# Replace the following line with your code.
-	[rand(1:starting_pixel) for i=1:m]
+	memory = Dict{Tuple{Int,Int}, Tuple{Float64,Int}}();
+	N,M = size(energies);
+	
+	seam = Int.(zeros(N));
+	seam[1] = starting_pixel;
+
+	~, memory = memoized_least_energy(energies, 1, starting_pixel, memory);
+	
+	for i = 2:N
+		seam[i] = memory[i-1,seam[i-1]][2];
+	end
+
+	return seam
 end
 
 # ╔═╡ 4e3bcf88-f3c5-11ea-3ada-2ff9213647b7
@@ -608,7 +646,33 @@ Now it's easy to see that the above algorithm is equivalent to one that populate
 
 # ╔═╡ ff055726-f320-11ea-32f6-2bf38d7dd310
 function least_energy_matrix(energies)
-	copy(energies)
+	
+	A = copy(energies);
+	N,M = size(energies);
+	
+	for i in (N-1):-1:1
+		for j in (M-1):-1:1
+
+			minpos = 0;
+			minval = Inf;
+			
+			for k in (j-1):(j+1)
+	
+				if (k < 1) | (k > M)
+					continue
+				elseif A[i+1,k] < minval
+					minpos = k;
+					minval = A[i+1,k];
+				end
+				
+			end
+	
+				A[i,j] += A[i+1,minpos];
+				
+			end
+		end
+
+	return A
 end
 
 # ╔═╡ 92e19f22-f37b-11ea-25f7-e321337e375e
@@ -620,11 +684,33 @@ md"""
 
 # ╔═╡ 795eb2c4-f37b-11ea-01e1-1dbac3c80c13
 function seam_from_precomputed_least_energy(energies, starting_pixel::Int)
-	least_energies = least_energy_matrix(energies)
-	m, n = size(least_energies)
+	least_energies = least_energy_matrix(energies);
+	N,M = size(least_energies);
 	
-	# Replace the following line with your code.
-	[starting_pixel for i=1:m]
+	seam = Vector{UInt}(undef,N);
+	seam[1] = starting_pixel;
+
+	for i in 1:N-1
+		
+		minpos = 0;
+		minval = Inf;
+		
+		for j in (seam[i]-1):(seam[i]+1)
+
+			if (j < 1) | (j > M)
+				continue
+			elseif least_energies[i+1,j] < minval
+				minpos = j;
+				minval = least_energies[i+1,j];
+			end
+			
+		end
+		
+		seam[i+1] = minpos;
+		
+	end
+	
+	return seam
 end
 
 # ╔═╡ 51df0c98-f3c5-11ea-25b8-af41dc182bac
@@ -935,7 +1021,7 @@ bigbreak
 # ╟─5430d772-f397-11ea-2ed8-03ee06d02a22
 # ╟─f580527e-f397-11ea-055f-bb9ea8f12015
 # ╟─6f52c1a2-f395-11ea-0c8a-138a77f03803
-# ╟─2a7e49b8-f395-11ea-0058-013e51baa554
+# ╠═2a7e49b8-f395-11ea-0058-013e51baa554
 # ╠═7ddee6fc-f394-11ea-31fc-5bd665a65bef
 # ╟─980b1104-f394-11ea-0948-21002f26ee25
 # ╟─9945ae78-f395-11ea-1d78-cf6ad19606c8
