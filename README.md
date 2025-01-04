@@ -18,10 +18,15 @@ __In progress__
 
   - [X] Week 1
   - [X] Week 2
-  - [ ] Week 3
+  - [X] Week 3
+  - [ ] Week 4
   - [ ] ...
 
 __Completed__
+
+- __Coursera__
+
+  - [X] Algorithms, Part I
 
 - __Kaggle__
 
@@ -33,14 +38,3 @@ __Completed__
   - [X] Intro to SQL
   - [X] Intro to Deep Learning
   - [X] Intro to Game AI and Reinforcement Learning
-
-__Backlog__
-
-- __Kaggle__
-
-  - Almost any pending course
-
-
-- __Coursera__
-
-  - Algorithmic Toolbox
